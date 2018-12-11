@@ -1,0 +1,2 @@
+PKG_CPPFLAGS = -std=c++17 -Wno-sign-compare -I/usr/include/libfreenect -I/usr/include/libusb-1.0/ -lfreenect -lfreenect_sync -lusb -lpthread -lm -lglut -lGLU -lGL -lGLEW
+PKG_LIBS = -I/usr/include/libfreenect -I/usr/include/libusb-1.0/ -lfreenect -lfreenect_sync -lusb -lpthread -lm -lglut -lGLU -lGL -lGLEW

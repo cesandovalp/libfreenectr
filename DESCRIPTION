@@ -1,0 +1,11 @@
+Package: libfreenect
+Type: Package
+Title: libfreenect wrapper
+Version: 0.1
+Date: 2018-12-08
+Author: Cristian Sandoval-Pineda
+Maintainer: Cristian Sandoval-Pineda <sandovalp.ce@gmail.com>
+Description: libfreenect wrapper for R using Rcpp.
+License: GPL (>= 2)
+Imports: Rcpp (>= 0.12.17)
+LinkingTo: Rcpp
