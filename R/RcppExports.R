@@ -2,22 +2,42 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 CreateSimpleDevice <- function() {
-    .Call(`_libfreenect_CreateSimpleDevice`)
+    invisible(.Call(`_libfreenectr_CreateSimpleDevice`))
 }
 
-SetTiltDegrees <- function(device, angle) {
-    invisible(.Call(`_libfreenect_SetTiltDegrees`, device, angle))
+SetTiltDegrees <- function(angle) {
+    invisible(.Call(`_libfreenectr_SetTiltDegrees`, angle))
 }
 
-GetAccelerometers <- function(device) {
-    .Call(`_libfreenect_GetAccelerometers`, device)
+GetAccelerometers <- function() {
+    .Call(`_libfreenectr_GetAccelerometers`)
 }
 
-GetTiltDegrees <- function(device) {
-    .Call(`_libfreenect_GetTiltDegrees`, device)
+GetTiltDegrees <- function() {
+    .Call(`_libfreenectr_GetTiltDegrees`)
 }
 
-SetLed <- function(device, status) {
-    invisible(.Call(`_libfreenect_SetLed`, device, status))
+SetLed <- function(status) {
+    invisible(.Call(`_libfreenectr_SetLed`, status))
+}
+
+DeviceCount <- function() {
+    .Call(`_libfreenectr_DeviceCount`)
+}
+
+StartVideo <- function() {
+    invisible(.Call(`_libfreenectr_StartVideo`))
+}
+
+StartDepth <- function() {
+    invisible(.Call(`_libfreenectr_StartDepth`))
+}
+
+GetFrameRGB <- function() {
+    .Call(`_libfreenectr_GetFrameRGB`)
+}
+
+StartGLUTVideo <- function(width, height) {
+    .Call(`_libfreenectr_StartGLUTVideo`, width, height)
 }
 

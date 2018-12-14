@@ -1,47 +1,36 @@
 #include <Rcpp.h>
 #include <string>
 
-#include "libfreenect.hpp"
-
-#if defined(__APPLE__)
-#include <GLUT/glut.h>
-#include <GLUT/freeglut.h>
-#include <OpenGL/gl.h>
-#include <OpenGL/glu.h>
-#else
-#include <GL/glut.h>
-#include <GL/freeglut.h>
-#include <GL/gl.h>
-#include <GL/glu.h>
-#endif
+#include "SimpleDevice.hpp"
+#include "VideoController.hpp"
 
 using namespace Rcpp;
 Freenect::Freenect freenect;
+VideoController* controller;
+SimpleFreenectDevice* device = NULL;
 
 // [[Rcpp::export]]
-SEXP CreateSimpleDevice( )
+void CreateSimpleDevice( )
 {
-  Freenect::FreenectDevice* result = &freenect.createDevice<Freenect::FreenectDevice>( 0 );
-  return XPtr<Freenect::FreenectDevice>( result );
+  if( device == NULL )
+    device = &freenect.createDevice<SimpleFreenectDevice>( 0 );
 }
 
 // [[Rcpp::export]]
-void SetTiltDegrees( SEXP device, int angle )
+void SetTiltDegrees( int angle )
 {
-  Freenect::FreenectDevice* device_ = XPtr<Freenect::FreenectDevice>( device );
-  device_->setTiltDegrees( angle );
+  device->setTiltDegrees( angle );
 }
 
 // [[Rcpp::export]]
-NumericVector GetAccelerometers( SEXP device )
+NumericVector GetAccelerometers( )
 {
   NumericVector result;
 
   double x, y, z;
 
-  Freenect::FreenectDevice* device_ = XPtr<Freenect::FreenectDevice>( device );
-  device_->updateState();
-  device_->getState().getAccelerometers( &x, &y, &z );
+  device->updateState();
+  device->getState().getAccelerometers( &x, &y, &z );
   
   result = NumericVector::create( _["x"] = x, _["y"] = y, _["z"] = z );
   
@@ -49,46 +38,92 @@ NumericVector GetAccelerometers( SEXP device )
 }
 
 // [[Rcpp::export]]
-double GetTiltDegrees( SEXP device )
+double GetTiltDegrees( )
 {
-  Freenect::FreenectDevice* device_ = XPtr<Freenect::FreenectDevice>( device );
-  device_->updateState();
+  device->updateState();
   
-  return device_->getState().getTiltDegs();
+  return device->getState().getTiltDegs();
 }
 
 // [[Rcpp::export]]
-void SetLed( SEXP device, std::string status )
+void SetLed( std::string status )
 {
-  Freenect::FreenectDevice* device_ = XPtr<Freenect::FreenectDevice>( device );
   if( status == "red" )
   {
-    device_->setLed( LED_RED );
+    device->setLed( LED_RED );
     return;
   }
   if( status == "green" )
   {
-    device_->setLed( LED_GREEN );
+    device->setLed( LED_GREEN );
     return;
   }
   if( status == "yellow" )
   {
-    device_->setLed( LED_YELLOW );
+    device->setLed( LED_YELLOW );
     return;
   }
   if( status == "blink green" )
   {
-    device_->setLed( LED_BLINK_GREEN );
+    device->setLed( LED_BLINK_GREEN );
     return;
   }
   if( status == "blink red yellow" )
   {
-    device_->setLed( LED_BLINK_RED_YELLOW );
+    device->setLed( LED_BLINK_RED_YELLOW );
     return;
   }
   if( status == "off" )
   {
-    device_->setLed( LED_OFF );
+    device->setLed( LED_OFF );
     return;
   }
+}
+
+// [[Rcpp::export]]
+int DeviceCount()
+{
+  return freenect.deviceCount();
+}
+
+// [[Rcpp::export]]
+void StartVideo( )
+{
+  device->startVideo();
+}
+
+// [[Rcpp::export]]
+void StartDepth( )
+{
+  device->startDepth();
+}
+
+// [[Rcpp::export]]
+NumericVector GetFrameRGB( )
+{
+  std::vector<uint8_t> buffer;
+
+  buffer.resize( 640 * 480 * 3 );
+
+  device->updateState();
+  device->GetFrameRGB( buffer );
+
+  return NumericVector( buffer.begin(), buffer.end() );
+}
+
+void DrawGLScene()
+{
+  controller->DrawGLScene();
+}
+
+void ResizeGLScene( int width, int height )
+{
+  controller->ResizeGLScene( width, height );
+}
+
+// [[Rcpp::export]]
+int StartGLUTVideo( int width, int height )
+{
+  controller = new VideoController( device, width, height );
+  return controller->GLThread( width, height, 0, 0, DrawGLScene, ResizeGLScene );
 }

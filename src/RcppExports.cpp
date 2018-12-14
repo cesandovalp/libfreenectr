@@ -6,70 +6,120 @@
 using namespace Rcpp;
 
 // CreateSimpleDevice
-SEXP CreateSimpleDevice();
-RcppExport SEXP _libfreenect_CreateSimpleDevice() {
+void CreateSimpleDevice();
+RcppExport SEXP _libfreenectr_CreateSimpleDevice() {
 BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    rcpp_result_gen = Rcpp::wrap(CreateSimpleDevice());
-    return rcpp_result_gen;
+    CreateSimpleDevice();
+    return R_NilValue;
 END_RCPP
 }
 // SetTiltDegrees
-void SetTiltDegrees(SEXP device, int angle);
-RcppExport SEXP _libfreenect_SetTiltDegrees(SEXP deviceSEXP, SEXP angleSEXP) {
+void SetTiltDegrees(int angle);
+RcppExport SEXP _libfreenectr_SetTiltDegrees(SEXP angleSEXP) {
 BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< SEXP >::type device(deviceSEXP);
     Rcpp::traits::input_parameter< int >::type angle(angleSEXP);
-    SetTiltDegrees(device, angle);
+    SetTiltDegrees(angle);
     return R_NilValue;
 END_RCPP
 }
 // GetAccelerometers
-NumericVector GetAccelerometers(SEXP device);
-RcppExport SEXP _libfreenect_GetAccelerometers(SEXP deviceSEXP) {
+NumericVector GetAccelerometers();
+RcppExport SEXP _libfreenectr_GetAccelerometers() {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< SEXP >::type device(deviceSEXP);
-    rcpp_result_gen = Rcpp::wrap(GetAccelerometers(device));
+    rcpp_result_gen = Rcpp::wrap(GetAccelerometers());
     return rcpp_result_gen;
 END_RCPP
 }
 // GetTiltDegrees
-double GetTiltDegrees(SEXP device);
-RcppExport SEXP _libfreenect_GetTiltDegrees(SEXP deviceSEXP) {
+double GetTiltDegrees();
+RcppExport SEXP _libfreenectr_GetTiltDegrees() {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< SEXP >::type device(deviceSEXP);
-    rcpp_result_gen = Rcpp::wrap(GetTiltDegrees(device));
+    rcpp_result_gen = Rcpp::wrap(GetTiltDegrees());
     return rcpp_result_gen;
 END_RCPP
 }
 // SetLed
-void SetLed(SEXP device, std::string status);
-RcppExport SEXP _libfreenect_SetLed(SEXP deviceSEXP, SEXP statusSEXP) {
+void SetLed(std::string status);
+RcppExport SEXP _libfreenectr_SetLed(SEXP statusSEXP) {
 BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< SEXP >::type device(deviceSEXP);
     Rcpp::traits::input_parameter< std::string >::type status(statusSEXP);
-    SetLed(device, status);
+    SetLed(status);
     return R_NilValue;
+END_RCPP
+}
+// DeviceCount
+int DeviceCount();
+RcppExport SEXP _libfreenectr_DeviceCount() {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    rcpp_result_gen = Rcpp::wrap(DeviceCount());
+    return rcpp_result_gen;
+END_RCPP
+}
+// StartVideo
+void StartVideo();
+RcppExport SEXP _libfreenectr_StartVideo() {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    StartVideo();
+    return R_NilValue;
+END_RCPP
+}
+// StartDepth
+void StartDepth();
+RcppExport SEXP _libfreenectr_StartDepth() {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    StartDepth();
+    return R_NilValue;
+END_RCPP
+}
+// GetFrameRGB
+NumericVector GetFrameRGB();
+RcppExport SEXP _libfreenectr_GetFrameRGB() {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    rcpp_result_gen = Rcpp::wrap(GetFrameRGB());
+    return rcpp_result_gen;
+END_RCPP
+}
+// StartGLUTVideo
+int StartGLUTVideo(int width, int height);
+RcppExport SEXP _libfreenectr_StartGLUTVideo(SEXP widthSEXP, SEXP heightSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type width(widthSEXP);
+    Rcpp::traits::input_parameter< int >::type height(heightSEXP);
+    rcpp_result_gen = Rcpp::wrap(StartGLUTVideo(width, height));
+    return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_libfreenect_CreateSimpleDevice", (DL_FUNC) &_libfreenect_CreateSimpleDevice, 0},
-    {"_libfreenect_SetTiltDegrees", (DL_FUNC) &_libfreenect_SetTiltDegrees, 2},
-    {"_libfreenect_GetAccelerometers", (DL_FUNC) &_libfreenect_GetAccelerometers, 1},
-    {"_libfreenect_GetTiltDegrees", (DL_FUNC) &_libfreenect_GetTiltDegrees, 1},
-    {"_libfreenect_SetLed", (DL_FUNC) &_libfreenect_SetLed, 2},
+    {"_libfreenectr_CreateSimpleDevice", (DL_FUNC) &_libfreenectr_CreateSimpleDevice, 0},
+    {"_libfreenectr_SetTiltDegrees", (DL_FUNC) &_libfreenectr_SetTiltDegrees, 1},
+    {"_libfreenectr_GetAccelerometers", (DL_FUNC) &_libfreenectr_GetAccelerometers, 0},
+    {"_libfreenectr_GetTiltDegrees", (DL_FUNC) &_libfreenectr_GetTiltDegrees, 0},
+    {"_libfreenectr_SetLed", (DL_FUNC) &_libfreenectr_SetLed, 1},
+    {"_libfreenectr_DeviceCount", (DL_FUNC) &_libfreenectr_DeviceCount, 0},
+    {"_libfreenectr_StartVideo", (DL_FUNC) &_libfreenectr_StartVideo, 0},
+    {"_libfreenectr_StartDepth", (DL_FUNC) &_libfreenectr_StartDepth, 0},
+    {"_libfreenectr_GetFrameRGB", (DL_FUNC) &_libfreenectr_GetFrameRGB, 0},
+    {"_libfreenectr_StartGLUTVideo", (DL_FUNC) &_libfreenectr_StartGLUTVideo, 2},
     {NULL, NULL, 0}
 };
 
-RcppExport void R_init_libfreenect(DllInfo *dll) {
+RcppExport void R_init_libfreenectr(DllInfo *dll) {
     R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
     R_useDynamicSymbols(dll, FALSE);
 }

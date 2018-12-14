@@ -1,3 +1,4 @@
-useDynLib(libfreenect, .registration=TRUE)
+useDynLib(libfreenectr, .registration=TRUE)
 exportPattern("^[[:alpha:]]+")
 importFrom(Rcpp, evalCpp)
+importFrom(pixmap, pixmapRGB)
