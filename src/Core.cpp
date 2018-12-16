@@ -139,10 +139,12 @@ NumericVector GetResolution()
 void SetHighResolution()
 {
   device->SetHighResolution();
+  device->updateState();
 }
 
 // [[Rcpp::export]]
 void SetMediumResolution()
 {
   device->SetMediumResolution();
+  device->updateState();
 }
