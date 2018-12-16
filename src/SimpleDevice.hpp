@@ -6,9 +6,28 @@
 class SimpleFreenectDevice : public Freenect::FreenectDevice
 {
   public:
+    int width;
+    int height;
+
     SimpleFreenectDevice( freenect_context* _ctx, int _index ) : Freenect::FreenectDevice( _ctx, _index )
     {
+      SetMediumResolution();
+    }
+    
+    void SetMediumResolution()
+    {
       buffer_video.resize( freenect_find_video_mode( FREENECT_RESOLUTION_MEDIUM, FREENECT_VIDEO_RGB ).bytes );
+      setVideoFormat( FREENECT_VIDEO_RGB, FREENECT_RESOLUTION_MEDIUM );
+      width  = 640;
+      height = 480;
+    }
+    
+    void SetHighResolution()
+    {
+      buffer_video.resize( freenect_find_video_mode( FREENECT_RESOLUTION_HIGH, FREENECT_VIDEO_RGB ).bytes );
+      setVideoFormat( FREENECT_VIDEO_RGB, FREENECT_RESOLUTION_HIGH );
+      width  = 1280;
+      height = 1024;
     }
 
     void VideoCallback( void* video, uint32_t timestamp )

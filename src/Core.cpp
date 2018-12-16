@@ -5,12 +5,13 @@
 #include "VideoController.hpp"
 
 using namespace Rcpp;
-Freenect::Freenect freenect;
-VideoController* controller;
+
+Freenect::Freenect    freenect;
+VideoController*      controller;
 SimpleFreenectDevice* device = NULL;
 
 // [[Rcpp::export]]
-void CreateSimpleDevice( )
+void CreateSimpleDevice()
 {
   if( device == NULL )
     device = &freenect.createDevice<SimpleFreenectDevice>( 0 );
@@ -23,7 +24,7 @@ void SetTiltDegrees( int angle )
 }
 
 // [[Rcpp::export]]
-NumericVector GetAccelerometers( )
+NumericVector GetAccelerometers()
 {
   NumericVector result;
 
@@ -38,7 +39,7 @@ NumericVector GetAccelerometers( )
 }
 
 // [[Rcpp::export]]
-double GetTiltDegrees( )
+double GetTiltDegrees()
 {
   device->updateState();
   
@@ -87,23 +88,23 @@ int DeviceCount()
 }
 
 // [[Rcpp::export]]
-void StartVideo( )
+void StartVideo()
 {
   device->startVideo();
 }
 
 // [[Rcpp::export]]
-void StartDepth( )
+void StartDepth()
 {
   device->startDepth();
 }
 
 // [[Rcpp::export]]
-NumericVector GetFrameRGB( )
+NumericVector GetFrameRGB()
 {
   std::vector<uint8_t> buffer;
 
-  buffer.resize( 640 * 480 * 3 );
+  buffer.resize( device->width * device->height * 3 );
 
   device->updateState();
   device->GetFrameRGB( buffer );
@@ -122,8 +123,26 @@ void ResizeGLScene( int width, int height )
 }
 
 // [[Rcpp::export]]
-int StartGLUTVideo( int width, int height )
+int StartGLUTVideo()
 {
-  controller = new VideoController( device, width, height );
-  return controller->GLThread( width, height, 0, 0, DrawGLScene, ResizeGLScene );
+  controller = new VideoController( device );
+  return controller->GLThread( 0, 0, DrawGLScene, ResizeGLScene );
+}
+
+// [[Rcpp::export]]
+NumericVector GetResolution()
+{
+  return NumericVector::create( _["width"] = device->width, _["height"] = device->height );
+}
+
+// [[Rcpp::export]]
+void SetHighResolution()
+{
+  device->SetHighResolution();
+}
+
+// [[Rcpp::export]]
+void SetMediumResolution()
+{
+  device->SetMediumResolution();
 }

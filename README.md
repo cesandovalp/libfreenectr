@@ -6,8 +6,8 @@ Install the development version from GitHub:
 
 ```sh
 $ git clone --recursive https://github.com/cesandovalp/libfreenectr
-$ R CMD build libfreenecte;
-$ R CMD INSTALL libfreenect_0.1.tar.gz
+$ R CMD build libfreenectr;
+$ R CMD INSTALL libfreenectr_0.1.tar.gz
 ```
 
 # Examples
@@ -28,7 +28,7 @@ SetTiltDegrees( 0 )
 
 ```
 
-## SetTiltDegrees
+## SetLed
 ```{r}
 library(libfreenectr)
 
@@ -49,8 +49,32 @@ library(pixmap)
 
 CreateSimpleDevice()
 StartVideo()
-photo = GetPhoto640x480( )
-
+photo = GetPhoto( )
 plot( photo )
+
+SetHighResolution()
+photo = GetPhoto( )
+plot( photo )
+
+```
+
+## StartVideo
+```{r}
+library(libfreenectr)
+
+CreateSimpleDevice()
+StartVideo()
+StartGLUTVideo( )
+
+```
+
+## StartVideo Max Resolution
+```{r}
+library(libfreenectr)
+
+CreateSimpleDevice()
+StartVideo()
+SetHighResolution()
+StartGLUTVideo( )
 
 ```

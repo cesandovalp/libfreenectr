@@ -24,12 +24,12 @@ class VideoController
   
   public:
   
-    VideoController( SimpleFreenectDevice* device, int width, int height ) : device(device)
+    VideoController( SimpleFreenectDevice* device ) : device(device)
     {
-      InitGL( width, height );
+      InitGL();
     }
   
-    void InitGL( int width, int height )
+    void InitGL()
     {
       glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
       glClearDepth( 1.0 );
@@ -42,10 +42,10 @@ class VideoController
       glBindTexture( GL_TEXTURE_2D, gl_rgb_tex );
       glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
       glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-      ResizeGLScene( width, height );
+      ResizeGLScene( device->width, device->height );
     }
 
-    int GLThread( int width, int height, int x, int y, DrawCallback draw, ResizeCallback resize )
+    int GLThread( int x, int y, DrawCallback draw, ResizeCallback resize )
     {
       int g_argc = 0;
       int window_id = 0;
@@ -54,7 +54,7 @@ class VideoController
 
       glutInitDisplayMode( GLUT_RGBA | GLUT_DOUBLE | GLUT_ALPHA | GLUT_DEPTH );
       glutSetOption( GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_GLUTMAINLOOP_RETURNS );
-      glutInitWindowSize( width, height );
+      glutInitWindowSize( device->width, device->height );
       glutInitWindowPosition( x, y );
 
       window_id = glutCreateWindow( "LibFreenect" );
@@ -62,8 +62,9 @@ class VideoController
       glutDisplayFunc( draw );
       glutIdleFunc( draw );
       glutReshapeFunc( resize );
+      //glutKeyboardFunc( &keyPressed );
 
-      InitGL( width, height );
+      InitGL();
 
       glutMainLoop();
 
@@ -72,8 +73,7 @@ class VideoController
 
     void DrawGLScene()
     {
-      static std::vector<uint8_t> depth( 640 * 480 * 4 );
-      static std::vector<uint8_t> rgb( 640 * 480 * 4 );
+      static std::vector<uint8_t> rgb( device->width * device->height * 3 );
 
       device->updateState();
 
@@ -86,16 +86,16 @@ class VideoController
 
       glBindTexture( GL_TEXTURE_2D, gl_rgb_tex );
       if( device->getVideoFormat() == FREENECT_VIDEO_RGB || device->getVideoFormat() == FREENECT_VIDEO_YUV_RGB )
-        glTexImage2D( GL_TEXTURE_2D, 0, 3, 640, 480, 0, GL_RGB, GL_UNSIGNED_BYTE, &rgb[0] );
+        glTexImage2D( GL_TEXTURE_2D, 0, 3, device->width, device->height, 0, GL_RGB, GL_UNSIGNED_BYTE, &rgb[0] );
       else
-        glTexImage2D( GL_TEXTURE_2D, 0, 1, 640, 480, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, &rgb[0] );
+        glTexImage2D( GL_TEXTURE_2D, 0, 1, device->width, device->height, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, &rgb[0] );
 
       glBegin( GL_TRIANGLE_FAN );
       glColor4f( 255.0f, 255.0f, 255.0f, 255.0f );
-      glTexCoord2f( 0, 0 ); glVertex3f(  640,   0, 0 );
-      glTexCoord2f( 1, 0 ); glVertex3f( 1280,   0, 0 );
-      glTexCoord2f( 1, 1 ); glVertex3f( 1280, 480, 0 );
-      glTexCoord2f( 0, 1 ); glVertex3f(  640, 480, 0 );
+      glTexCoord2f( 0, 0 ); glVertex3f(   0,   0, 0 );
+      glTexCoord2f( 1, 0 ); glVertex3f( device->width,   0, 0 );
+      glTexCoord2f( 1, 1 ); glVertex3f( device->width, device->height, 0 );
+      glTexCoord2f( 0, 1 ); glVertex3f(   0, device->height, 0 );
       glEnd();
 
       glutSwapBuffers();
@@ -106,7 +106,7 @@ class VideoController
       glViewport( 0, 0, width, height );
       glMatrixMode( GL_PROJECTION );
       glLoadIdentity();
-      glOrtho( 0, 1280, 480, 0, -1.0f, 1.0f );
+      glOrtho( 0, device->width, device->height, 0, -1.0f, 1.0f );
       glMatrixMode( GL_MODELVIEW );
     } 
 };
