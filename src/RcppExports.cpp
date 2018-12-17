@@ -92,14 +92,25 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// StartGLUTVideo
-int StartGLUTVideo();
-RcppExport SEXP _libfreenectr_StartGLUTVideo() {
+// GetFrameDepth
+NumericVector GetFrameDepth();
+RcppExport SEXP _libfreenectr_GetFrameDepth() {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    rcpp_result_gen = Rcpp::wrap(StartGLUTVideo());
+    rcpp_result_gen = Rcpp::wrap(GetFrameDepth());
     return rcpp_result_gen;
+END_RCPP
+}
+// StartGLUTVideo
+void StartGLUTVideo(bool RGB, bool Depth);
+RcppExport SEXP _libfreenectr_StartGLUTVideo(SEXP RGBSEXP, SEXP DepthSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< bool >::type RGB(RGBSEXP);
+    Rcpp::traits::input_parameter< bool >::type Depth(DepthSEXP);
+    StartGLUTVideo(RGB, Depth);
+    return R_NilValue;
 END_RCPP
 }
 // GetResolution
@@ -141,7 +152,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_libfreenectr_StartVideo", (DL_FUNC) &_libfreenectr_StartVideo, 0},
     {"_libfreenectr_StartDepth", (DL_FUNC) &_libfreenectr_StartDepth, 0},
     {"_libfreenectr_GetFrameRGB", (DL_FUNC) &_libfreenectr_GetFrameRGB, 0},
-    {"_libfreenectr_StartGLUTVideo", (DL_FUNC) &_libfreenectr_StartGLUTVideo, 0},
+    {"_libfreenectr_GetFrameDepth", (DL_FUNC) &_libfreenectr_GetFrameDepth, 0},
+    {"_libfreenectr_StartGLUTVideo", (DL_FUNC) &_libfreenectr_StartGLUTVideo, 2},
     {"_libfreenectr_GetResolution", (DL_FUNC) &_libfreenectr_GetResolution, 0},
     {"_libfreenectr_SetHighResolution", (DL_FUNC) &_libfreenectr_SetHighResolution, 0},
     {"_libfreenectr_SetMediumResolution", (DL_FUNC) &_libfreenectr_SetMediumResolution, 0},

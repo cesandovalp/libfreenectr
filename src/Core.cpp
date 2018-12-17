@@ -112,6 +112,19 @@ NumericVector GetFrameRGB()
   return NumericVector( buffer.begin(), buffer.end() );
 }
 
+// [[Rcpp::export]]
+NumericVector GetFrameDepth()
+{
+  std::vector<uint16_t> buffer;
+
+  buffer.resize( 640 * 480 * 3 );
+
+  device->updateState();
+  device->GetFrameDepth( buffer );
+
+  return NumericVector( buffer.begin(), buffer.end() );
+}
+
 void DrawGLScene()
 {
   controller->DrawGLScene();
@@ -123,10 +136,24 @@ void ResizeGLScene( int width, int height )
 }
 
 // [[Rcpp::export]]
-int StartGLUTVideo()
+void StartGLUTVideo( bool RGB = true, bool Depth = false)
 {
+  int g_argc = 0;
+
+  glutInit( &g_argc, NULL );
   controller = new VideoController( device );
-  return controller->GLThread( 0, 0, DrawGLScene, ResizeGLScene );
+
+  if( RGB )
+  {
+    controller->GLThread( 0, 0, device->width, device->height, DrawGLScene, ResizeGLScene, "LibFreenect RGB" );
+  }
+  if( Depth )
+  {
+    controller->GLThread( 0, 0, 640, 480, DrawGLScene, ResizeGLScene, "LibFreenect Depth" );
+  }
+  
+  controller->InitGL();
+  glutMainLoop();
 }
 
 // [[Rcpp::export]]

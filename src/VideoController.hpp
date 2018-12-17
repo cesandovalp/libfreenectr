@@ -21,6 +21,7 @@ class VideoController
 {
   SimpleFreenectDevice* device;
   GLuint gl_rgb_tex;
+  GLuint gl_depth_tex;
   
   public:
   
@@ -38,35 +39,32 @@ class VideoController
       glEnable( GL_BLEND );
       glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
       glShadeModel( GL_SMOOTH );
+      glGenTextures( 1, &gl_depth_tex );
+      glBindTexture( GL_TEXTURE_2D, gl_depth_tex );
+      glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+      glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
       glGenTextures( 1, &gl_rgb_tex );
       glBindTexture( GL_TEXTURE_2D, gl_rgb_tex );
       glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
       glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-      ResizeGLScene( device->width, device->height );
     }
 
-    int GLThread( int x, int y, DrawCallback draw, ResizeCallback resize )
+    int GLThread( int x, int y, int width, int height, DrawCallback draw, ResizeCallback resize, const char* name )
     {
-      int g_argc = 0;
       int window_id = 0;
-
-      glutInit( &g_argc, NULL );
 
       glutInitDisplayMode( GLUT_RGBA | GLUT_DOUBLE | GLUT_ALPHA | GLUT_DEPTH );
       glutSetOption( GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_GLUTMAINLOOP_RETURNS );
       glutInitWindowSize( device->width, device->height );
       glutInitWindowPosition( x, y );
 
-      window_id = glutCreateWindow( "LibFreenect" );
-
+      window_id = glutCreateWindow( name );
       glutDisplayFunc( draw );
       glutIdleFunc( draw );
       glutReshapeFunc( resize );
       //glutKeyboardFunc( &keyPressed );
-
-      InitGL();
-
-      glutMainLoop();
+      
+      resize( width, height );
 
       return window_id;
     }
@@ -101,12 +99,48 @@ class VideoController
       glutSwapBuffers();
     }
     
+    void DrawGLSceneDepth()
+    {
+      static std::vector<uint16_t> depth( 640 * 480 * 4 );
+
+      device->updateState();
+
+      device->GetFrameDepth( depth );
+
+      glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+      glLoadIdentity();
+
+      glEnable( GL_TEXTURE_2D );
+
+      glBindTexture( GL_TEXTURE_2D, gl_depth_tex );
+      glTexImage2D( GL_TEXTURE_2D, 0, 3, 640, 480, 0, GL_RGB, GL_UNSIGNED_BYTE, &depth[0] );
+
+      glBegin( GL_TRIANGLE_FAN );
+      glColor4f( 255.0f, 255.0f, 255.0f, 255.0f );
+      glTexCoord2f( 0, 0 ); glVertex3f(   0,   0, 0 );
+      glTexCoord2f( 1, 0 ); glVertex3f( 640,   0, 0 );
+      glTexCoord2f( 1, 1 ); glVertex3f( 640, 480, 0 );
+      glTexCoord2f( 0, 1 ); glVertex3f(   0, 480, 0 );
+      glEnd();
+ 
+      glutSwapBuffers();
+    }
+    
     void ResizeGLScene( int width, int height )
     {
       glViewport( 0, 0, width, height );
       glMatrixMode( GL_PROJECTION );
       glLoadIdentity();
       glOrtho( 0, device->width, device->height, 0, -1.0f, 1.0f );
+      glMatrixMode( GL_MODELVIEW );
+    }
+    
+    void ResizeGLSceneDepth( int width, int height )
+    {
+      glViewport( 0, 0, width, height );
+      glMatrixMode( GL_PROJECTION );
+      glLoadIdentity();
+      glOrtho( 0, 640, 480, 0, -1.0f, 1.0f );
       glMatrixMode( GL_MODELVIEW );
     } 
 };

@@ -37,8 +37,12 @@ GetFrameRGB <- function() {
     .Call(`_libfreenectr_GetFrameRGB`)
 }
 
-StartGLUTVideo <- function() {
-    .Call(`_libfreenectr_StartGLUTVideo`)
+GetFrameDepth <- function() {
+    .Call(`_libfreenectr_GetFrameDepth`)
+}
+
+StartGLUTVideo <- function(RGB = TRUE, Depth = FALSE) {
+    invisible(.Call(`_libfreenectr_StartGLUTVideo`, RGB, Depth))
 }
 
 GetResolution <- function() {

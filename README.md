@@ -58,6 +58,18 @@ plot( photo )
 
 ```
 
+## Take a depth photo
+```{r}
+library(libfreenectr)
+library(pixmap)
+
+CreateSimpleDevice()
+StartDepth()
+photo = GetDepth( )
+plot( photo )
+
+```
+
 ## StartVideo
 ```{r}
 library(libfreenectr)
